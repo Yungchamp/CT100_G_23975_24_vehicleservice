@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Book a vehicle service at AutoCare Garage and see your cost estimate update as you choose.">
+  <title>Book a service | AutoCare Garage</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%23f4c20d'/%3E%3Ctext x='16' y='22' font-size='15' font-weight='700' text-anchor='middle' font-family='Arial' fill='%231c2321'%3EAC%3C/text%3E%3C/svg%3E">
+
+  <!-- Bootstrap 5 and Bootstrap Icons (loaded from a CDN, so an internet connection is needed) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Barlow fonts. If they fail to load, the fallbacks in style.css are used -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
+
+  <!-- Our own styles (must come after Bootstrap) -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===================== NAVIGATION ===================== -->
+  <nav class="navbar navbar-expand-lg navbar-dark site-nav sticky-top">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+        <span class="brand-mark" aria-hidden="true">AC</span>
+        <span>AutoCare Garage</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+              aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html#prices">Price list</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html#how-it-works">How it works</a></li>
+          <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+            <a class="btn btn-plate btn-sm" href="service.html" aria-current="page">Book a service</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===================== PAGE CONTENT ===================== -->
+  <main class="container py-5">
+
+    <div class="page-intro mb-4">
+      <h1>Book a service</h1>
+      <p class="lead mb-0">Fill in your details and choose the work you need. Your estimate updates with every tick.</p>
+    </div>
+
+    <!--
+      novalidate: we show our own error messages from script.js instead of the browser's pop-ups.
+      action + method: the form is sent to process_service.php using POST.
+    -->
+    <form id="serviceForm" action="process_service.php" method="POST" novalidate>
+
+      <!-- Shown by script.js when the form is submitted with problems -->
+      <div id="formAlert" class="alert alert-danger d-none" role="alert" tabindex="-1">
+        <i class="bi bi-exclamation-octagon-fill me-2" aria-hidden="true"></i>
+        <span id="formAlertText"></span>
+      </div>
+
+      <div class="row g-4">
+
+        <!-- ============ LEFT: THE FORM FIELDS ============ -->
+        <div class="col-lg-8">
+
+          <!-- ---------- Customer details ---------- -->
+          <section class="form-panel" aria-labelledby="customerHeading">
+            <h2 class="panel-title" id="customerHeading">Your details</h2>
+            <div class="row g-3">
+
+              <div class="col-12">
+                <label for="customerName" class="form-label">Full name</label>
+                <input type="text" class="form-control" id="customerName" name="customer_name"
+                       placeholder="e.g. Jane Wanjiku" autocomplete="name" required
+                       aria-describedby="customerNameError">
+                <div class="invalid-feedback" id="customerNameError"></div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="phone" class="form-label">Phone number</label>
+                <input type="tel" class="form-control" id="phone" name="phone"
+                       placeholder="0712345678" inputmode="numeric" autocomplete="tel" required
+                       aria-describedby="phoneHelp phoneError">
+                <div class="invalid-feedback" id="phoneError"></div>
+                <div class="form-text" id="phoneHelp">10 digits, numbers only.</div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="email" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="email" name="email"
+                       placeholder="jane@example.com" autocomplete="email" required
+                       aria-describedby="emailError">
+                <div class="invalid-feedback" id="emailError"></div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- ---------- Vehicle details ---------- -->
+          <section class="form-panel" aria-labelledby="vehicleHeading">
+            <h2 class="panel-title" id="vehicleHeading">Your vehicle</h2>
+            <div class="row g-3">
+
+              <div class="col-12">
+                <label for="regNumber" class="form-label">Vehicle registration number</label>
+                <input type="text" class="form-control plate-input" id="regNumber" name="reg_number"
+                       placeholder="KDA 123A" maxlength="10" autocomplete="off" spellcheck="false" required
+                       aria-describedby="regNumberHelp regNumberError">
+                <div class="invalid-feedback" id="regNumberError"></div>
+                <div class="form-text" id="regNumberHelp">Type it as it appears on your number plate.</div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="vehicleType" class="form-label">Vehicle type</label>
+                <select class="form-select" id="vehicleType" name="vehicle_type" required
+                        aria-describedby="vehicleTypeHelp vehicleTypeError">
+                  <option value="" selected>Choose a type</option>
+                  <option value="Saloon Car">Saloon Car</option>
+                  <option value="SUV">SUV</option>
+                  <option value="Pickup">Pickup</option>
+                  <option value="Van">Van</option>
+                </select>
+                <div class="invalid-feedback" id="vehicleTypeError"></div>
+                <div class="form-text" id="vehicleTypeHelp">Service charges are the same for every vehicle type.</div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="vehicleModel" class="form-label">Vehicle make / model</label>
+                <select class="form-select" id="vehicleModel" name="vehicle_model" required
+                        aria-describedby="vehicleModelError">
+                  <option value="" selected>Choose a make</option>
+                  <option value="Toyota">Toyota</option>
+                  <option value="Nissan">Nissan</option>
+                  <option value="Subaru">Subaru</option>
+                  <option value="Mazda">Mazda</option>
+                  <option value="Honda">Honda</option>
+                  <option value="Other">Other</option>
+                </select>
+                <div class="invalid-feedback" id="vehicleModelError"></div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="manufactureYear" class="form-label">Year of manufacture</label>
+                <input type="text" class="form-control" id="manufactureYear" name="manufacture_year"
+                       placeholder="e.g. 2015" inputmode="numeric" maxlength="4" autocomplete="off" required
+                       aria-describedby="manufactureYearError">
+                <div class="invalid-feedback" id="manufactureYearError"></div>
+              </div>
+
+            </div>
+
+            <!-- Filled in by script.js when a vehicle type is chosen -->
+            <div id="vehicleTypeInfo" class="info-note d-none" role="status">
+              <i class="bi bi-info-circle-fill" aria-hidden="true"></i>
+              <div><strong id="vehicleTypeTitle"></strong> <span id="vehicleTypeText"></span></div>
+            </div>
+
+            <!-- Shown by script.js for older vehicles -->
+            <div id="ageWarning" class="age-warning d-none" role="status">
+              <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+              <div>
+                <p class="mb-2" id="ageWarningText"></p>
+                <button type="button" class="btn btn-sm btn-dark" id="addDiagnosisBtn">Add Computer Diagnosis</button>
+                <span id="diagnosisAdded" class="d-none fw-semibold">
+                  <i class="bi bi-check-circle-fill" aria-hidden="true"></i> Computer Diagnosis is on your list.
+                </span>
+              </div>
+            </div>
+          </section>
+
+          <!-- ---------- Service details ---------- -->
+          <section class="form-panel" aria-labelledby="serviceHeading">
+            <h2 class="panel-title" id="serviceHeading">Your service</h2>
+
+            <div class="mb-4">
+              <label for="serviceDate" class="form-label">Preferred service date</label>
+              <input type="date" class="form-control" id="serviceDate" name="service_date" required
+                     style="max-width: 15rem;" aria-describedby="serviceDateError">
+              <div class="invalid-feedback" id="serviceDateError"></div>
+            </div>
+
+            <!-- Required services: the customer can tick more than one -->
+            <fieldset class="service-group mb-4" id="serviceGroup">
+              <legend class="field-legend d-flex flex-wrap align-items-center justify-content-between gap-2">
+                <span>Required services <span class="fw-normal text-secondary">(choose one or more)</span></span>
+                <span class="count-badge" id="serviceCount" aria-live="polite">0 services selected</span>
+              </legend>
+
+              <div class="row g-2">
+
+                <div class="col-12">
+                  <label class="service-option" for="svcOilChange">
+                    <input class="form-check-input service-checkbox" type="checkbox"
+                           id="svcOilChange" name="services[]" value="oil_change">
+                    <span class="service-text">
+                      <span class="service-name">Engine Oil Change</span>
+                      <span class="service-desc">Drain the old engine oil and refill with fresh oil.</span>
+                    </span>
+                    <span class="service-price">KSh 3,000</span>
+                  </label>
+                </div>
+
+                <div class="col-12">
+                  <label class="service-option" for="svcBrakeInspection">
+                    <input class="form-check-input service-checkbox" type="checkbox"
+                           id="svcBrakeInspection" name="services[]" value="brake_inspection">
+                    <span class="service-text">
+                      <span class="service-name">Brake Inspection</span>
+                      <span class="service-desc">Check the brake pads, discs and brake fluid.</span>
+                    </span>
+                    <span class="service-price">KSh 2,000</span>
+                  </label>
+                </div>
+
+                <div class="col-12">
+                  <label class="service-option" for="svcWheelAlignment">
+                    <input class="form-check-input service-checkbox" type="checkbox"
+                           id="svcWheelAlignment" name="services[]" value="wheel_alignment">
+                    <span class="service-text">
+                      <span class="service-name">Wheel Alignment</span>
+                      <span class="service-desc">Adjust wheel angles for even tyre wear and straight driving.</span>
+                    </span>
+                    <span class="service-price">KSh 2,500</span>
+                  </label>
+                </div>
+
+                <div class="col-12">
+                  <label class="service-option" for="svcComputerDiagnosis">
+                    <input class="form-check-input service-checkbox" type="checkbox"
+                           id="svcComputerDiagnosis" name="services[]" value="computer_diagnosis">
+                    <span class="service-text">
+                      <span class="service-name">Computer Diagnosis</span>
+                      <span class="service-desc">Read fault codes and check the engine sensors.</span>
+                    </span>
+                    <span class="service-price">KSh 3,500</span>
+                  </label>
+                </div>
+
+                <div class="col-12">
+                  <label class="service-option" for="svcFullService">
+                    <input class="form-check-input service-checkbox" type="checkbox"
+                           id="svcFullService" name="services[]" value="full_service">
+                    <span class="service-text">
+                      <span class="service-name">Full Service</span>
+                      <span class="service-desc">Routine maintenance with a multi-point vehicle check.</span>
+                    </span>
+                    <span class="service-price">KSh 8,000</span>
+                  </label>
+                </div>
+
+              </div>
+
+              <!-- Shown by script.js when no service is ticked at submit time -->
+              <div class="invalid-feedback" id="servicesError">Select at least one service.</div>
+            </fieldset>
+
+            <!-- Additional option: pickup and delivery (individual requirement, adds KSh 1,500) -->
+            <fieldset>
+              <legend class="field-legend">Additional option</legend>
+              <label class="service-option" for="pickupDelivery" id="pickupRow">
+                <input class="form-check-input" type="checkbox" id="pickupDelivery" name="pickup_delivery" value="yes">
+                <span class="service-text">
+                  <span class="service-name"><i class="bi bi-truck me-1" aria-hidden="true"></i>Vehicle Pickup &amp; Delivery</span>
+                  <span class="service-desc">We collect your vehicle before the service and bring it back afterwards.</span>
+                </span>
+                <span class="service-price">KSh 1,500</span>
+              </label>
+            </fieldset>
+          </section>
+
+        </div>
+
+        <!-- ============ RIGHT: LIVE ESTIMATE ============ -->
+        <aside class="col-lg-4">
+          <div class="summary-sticky">
+            <div class="ticket" aria-labelledby="ticketTitle">
+              <h2 class="ticket-title" id="ticketTitle">Estimated total cost</h2>
+
+              <!-- script.js builds one line per ticked service (and the pickup fee) -->
+              <ul class="ticket-lines" id="costLines" aria-live="polite"></ul>
+              <p class="ticket-empty" id="costEmpty">Tick a service to see its price here.</p>
+
+              <div class="ticket-total">
+                <span>Estimated total</span>
+                <strong id="totalAmount">KSh 0</strong>
+              </div>
+
+              <p class="ticket-note">
+                Our server checks this total when you submit. The amount on your confirmation is the one that counts.
+              </p>
+
+              <!-- The browser's total is sent along only so the server can compare it with its own figure -->
+              <input type="hidden" id="clientTotal" name="client_total" value="0">
+
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-plate btn-lg" id="submitBtn">Submit booking request</button>
+                <button type="reset" class="btn btn-outline-dark" id="resetBtn">Reset form</button>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </form>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-5">
+          <h2>AutoCare Garage</h2>
+          <p class="mb-0">Maintenance and repair for saloon cars, SUVs, pickups and vans. Book online and know your cost before you arrive.</p>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+          <h2>Pages</h2>
+          <ul class="list-unstyled mb-0">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#prices">Price list</a></li>
+            <li><a href="service.html">Book a service</a></li>
+          </ul>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4">
+          <h2>Contact</h2>
+          <ul class="list-unstyled mb-0">
+            <li><i class="bi bi-telephone-fill me-2" aria-hidden="true"></i>0717 830 032</li>
+            <li><i class="bi bi-envelope-fill me-2" aria-hidden="true"></i>briankiruiyung@gmail.com</li>
+            <li><i class="bi bi-clock-fill me-2" aria-hidden="true"></i>Mon to Sat, 8:00 am to 6:00 pm</li>
+          </ul>
+        </div>
+      </div>
+      <p class="footer-legal">&copy; 2026 AutoCare Garage. </p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap's JavaScript (needed for the mobile menu), then our own script -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
